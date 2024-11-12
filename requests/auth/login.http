@@ -1,9 +1,0 @@
-
-POST /api/login/ HTTP/1.1
-Content-Type: application/json
-Host: localhost:3000
-
-{
-    "email": "leonardo.s2@gmail.com",
-    "password": "Teixeira!@service"
-}
