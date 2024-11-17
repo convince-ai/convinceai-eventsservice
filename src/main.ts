@@ -8,18 +8,17 @@ import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { envVars } from './common/envs';
 import * as bodyParser from 'body-parser';
+import { GlobalExceptionFilter } from './system/filters/global-exception.filter';
 
 async function bootstrap() {
   const port = envVars.PORT || 3000;
-
   const app = await NestFactory.create(AppModule);
-  await app.listen(process.env.PORT ?? 3000);
 
   app.setGlobalPrefix('api', {
     exclude: [{ path: 'health', method: RequestMethod.GET }],
   });
   app.enableCors();
-  //app.useGlobalFilters(new GlobalExceptionFilter());
+  app.useGlobalFilters(new GlobalExceptionFilter());
   //app.useGlobalInterceptors(new TransformInterceptor());
 
   app.useGlobalPipes(

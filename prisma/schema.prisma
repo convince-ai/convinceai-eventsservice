@@ -1,22 +1,51 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
 generator client {
   provider      = "prisma-client-js"
   binaryTargets = ["native", "rhel-openssl-3.0.x", "rhel-openssl-1.1.x", "rhel-openssl-1.0.x"]
 }
 
 datasource db {
-  provider = "mysql"
+  provider = "mongodb"
   url      = env("DATABASE_URL")
 }
 
-model Users {
-  id             String   @id @default(uuid())
-  firstName      String
-  lastName       String
-  email          String   @unique
-  password       String
-  ddd            Int
-  whatsappNumber Int
-  createdAt      DateTime @default(now())
-  updatedAt      DateTime @updatedAt
-  isActive       Boolean  @default(true)
+model AbandonedCartEvent {
+  id            String   @id @default(auto()) @map("_id") @db.ObjectId
+  eventId       String
+  buyer         Buyer
+  product       Products
+  creation_date Int
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  @@map("abandoned-cart-events")
+}
+
+model Product {
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  name        String
+  productId   Int      @unique
+  description String
+  tenantid    String?
+  branchid    String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@map("products")
+}
+
+type Buyer {
+  name  String
+  email String
+  phone String
+}
+
+type Products {
+  id   Int
+  name String
 }

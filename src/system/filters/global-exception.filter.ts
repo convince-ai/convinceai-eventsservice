@@ -20,7 +20,7 @@ export class GlobalExceptionFilter implements ExceptionFilter {
 
     let message = 'Internal server error';
 
-    const isProduction = envVars.ENVIRONMENT === 'prod';
+    const isProduction = envVars.ENV === 'prod';
 
     if (isProduction) {
       message =
@@ -44,7 +44,7 @@ export class GlobalExceptionFilter implements ExceptionFilter {
     response.status(status).json({
       statusCode: status,
       message: message,
-      stack: stack,
+      // stack: stack,
     });
 
     // if (isProduction) {}
