@@ -22,6 +22,7 @@ model AbandonedCartEvent {
   creation_date Int
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
+  sentToQueue   Boolean
 
   @@map("abandoned-cart-events")
 }

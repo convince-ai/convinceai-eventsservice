@@ -6,6 +6,7 @@ import { ProductDto } from '../../products/dto/response/products.dto';
 import { AbandonedCartService } from '../services/abandonedCart.service';
 import { RabbitMQService } from '../../messaging/services/rabbitmq.service';
 import { envVars } from '../../../common/envs';
+import { AbandonedCartEventRegister } from '../dto/response/hotmart-payload';
 
 @Injectable()
 export class AbandonedCartEventHandler {
@@ -29,7 +30,7 @@ export class AbandonedCartEventHandler {
         event: { ...event.data, product },
       });
 
-      await this.removeCartEventFromDatabase(cartId);
+      await this.updateEventStatus(cartId);
     }
   }
 
@@ -37,7 +38,10 @@ export class AbandonedCartEventHandler {
     return await this.productService.findByProductId(productId);
   }
 
-  private async removeCartEventFromDatabase(eventId: string) {
-    return await this.abandonedCartService.remove(eventId);
+  private async updateEventStatus(eventId: string) {
+    const data: Partial<AbandonedCartEventRegister> = {
+      sentToQueue: true,
+    };
+    return await this.abandonedCartService.update(eventId, data);
   }
 }

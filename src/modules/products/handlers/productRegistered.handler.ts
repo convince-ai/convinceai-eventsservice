@@ -3,7 +3,10 @@ import { OnEvent } from '@nestjs/event-emitter';
 import { RabbitMQService } from '../../messaging/services/rabbitmq.service';
 import { ProductRegisteredEvent } from '../events/product.event';
 import { AbandonedCartService } from '../../abandonedCart/services/abandonedCart.service';
-import { HotmartAbandonedCartPayload } from '../../abandonedCart/dto/response/hotmart-payload';
+import {
+  AbandonedCartEventRegister,
+  HotmartAbandonedCartPayload,
+} from '../../abandonedCart/dto/response/hotmart-payload';
 
 @Injectable()
 export class ProductRegisteredEventHandler {
@@ -24,7 +27,7 @@ export class ProductRegisteredEventHandler {
         event: abandonedCartEvents,
       });
 
-      await this.removeAbandonedCartEvents(abandonedCartEvents);
+      await this.updateAbandonedCartEvents(abandonedCartEvents);
     }
   }
 
@@ -32,11 +35,15 @@ export class ProductRegisteredEventHandler {
     return await this.abandonedCartService.findAllByProductId(productId);
   }
 
-  private async removeAbandonedCartEvents(
+  private async updateAbandonedCartEvents(
     abandonedCartEvents: HotmartAbandonedCartPayload[],
   ) {
+    const data: Partial<AbandonedCartEventRegister> = {
+      sentToQueue: true,
+    };
+
     for (const events of abandonedCartEvents) {
-      return await this.abandonedCartService.remove(events.id);
+      return await this.abandonedCartService.update(events.id, data);
     }
   }
 }

@@ -1,6 +1,14 @@
 /**
  * hotmart-abandoned-cart-webhook-schema
  */
+
+export interface AbandonedCartEventRegister {
+  eventId: string;
+  buyer: Buyer;
+  product: Product;
+  creation_date: number;
+  sentToQueue: boolean;
+}
 export interface HotmartAbandonedCartPayload {
   _id?: string;
   creation_date: number;

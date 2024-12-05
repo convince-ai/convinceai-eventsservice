@@ -1,5 +1,8 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
-import { HotmartAbandonedCartPayload } from '../dto/response/hotmart-payload';
+import {
+  AbandonedCartEventRegister,
+  HotmartAbandonedCartPayload,
+} from '../dto/response/hotmart-payload';
 import { AbandonedCartRepository } from '../repositories/abandonedCart.repository';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { AbandonedCartRegisteredEvent } from '../../abandonedCart/events/abandonedCart.event';
@@ -45,6 +48,10 @@ export class AbandonedCartService {
 
   async remove(id: string) {
     return await this.repository.remove(id);
+  }
+
+  async update(id: string, data: Partial<AbandonedCartEventRegister>) {
+    return await this.repository.update(id, data);
   }
 
   async findAllByProductId(productId: number) {
