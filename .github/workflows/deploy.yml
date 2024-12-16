@@ -28,7 +28,7 @@ jobs:
         run: npm run build
 
       - name: Generate Deployment Package
-        run: zip -r take-profit-api.zip . -x 'node_modules/*' -x 'requests/*' -x "test/*" 
+        run: zip -r convince-ai-eventsservice.zip . -x 'node_modules/*' -x 'requests/*' -x "test/*" 
 
       - name: Deploy to Elastic Beanstalk
         uses: einaregilsson/beanstalk-deploy@v21
@@ -39,4 +39,4 @@ jobs:
           environment_name: 'Convince-ai-eventsservice-env'
           version_label: ${{ github.sha }}
           region: us-east-1
-          deployment_package: Convince-ai-eventsservice.zip
+          deployment_package: convince-ai-eventsservice.zip
