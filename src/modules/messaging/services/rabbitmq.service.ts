@@ -16,7 +16,7 @@ export class RabbitMQService implements OnModuleInit, OnModuleDestroy {
   }
 
   private async connect() {
-    const rabbitMqConnection = `amqp://${envVars.RABBITMQ_USER}:${envVars.RABBITMQ_PASS}@${envVars.RABBITMQ_HOST}:${envVars.RABBITMQ_PORT}`;
+    const rabbitMqConnection = envVars.RABBITMQ_URI;
     try {
       this.connection = await amqp.connect(rabbitMqConnection);
       this.channel = await this.connection.createChannel();
