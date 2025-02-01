@@ -9,7 +9,7 @@ import { AppModule } from './app.module';
 import { envVars } from './common/envs';
 import * as bodyParser from 'body-parser';
 import { GlobalExceptionFilter } from './system/filters/global-exception.filter';
-import { JwtInterceptor } from './system/interceptors/jwt.interceptor';
+//import { JwtInterceptor } from './system/interceptors/jwt.interceptor';
 
 async function bootstrap() {
   const port = envVars.PORT || 3000;
@@ -20,7 +20,7 @@ async function bootstrap() {
   });
   app.enableCors();
   app.useGlobalFilters(new GlobalExceptionFilter());
-  app.useGlobalInterceptors(new JwtInterceptor());
+  //app.useGlobalInterceptors(new JwtInterceptor());
 
   app.useGlobalPipes(
     new ValidationPipe({
