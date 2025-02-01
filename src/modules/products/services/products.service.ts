@@ -63,8 +63,8 @@ export class ProductsService {
     return formatedProductList;
   }
 
-  async findOne(id: string) {
-    return await this.repository.findOne(id);
+  async findOne(id: string, where: Record<string, string>) {
+    return await this.repository.findOne(id, where);
   }
 
   async findByProductId(productId: number) {

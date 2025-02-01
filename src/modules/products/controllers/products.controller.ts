@@ -11,12 +11,15 @@ import {
   Post,
   Query,
   Req,
+  UseInterceptors,
 } from '@nestjs/common';
 import { PaginationParamsDto } from '../../../common/dto/pagination.dto';
 import { ProductsService } from '../services/products.service';
 import { ProductDto } from '../dto/response/products.dto';
 import { Prisma } from '@prisma/client';
+import { JwtInterceptor } from '../../../system/interceptors/jwt.interceptor';
 
+@UseInterceptors(JwtInterceptor)
 @Controller('products')
 export class ProductsController {
   constructor(private readonly productService: ProductsService) {}
@@ -42,21 +45,31 @@ export class ProductsController {
   }
 
   @Get('/bi/abandoned-products')
-  async abandonedRegions(@Query() paginationParams: PaginationParamsDto) {
+  async abandonedRegions(
+    @Req() request,
+    @Query() paginationParams: PaginationParamsDto,
+  ) {
+    const { branchId, tenantid, _ } = request.customer;
+
     return await this.productService.getAbandonedProducts({
       limit: paginationParams.limit,
       page: paginationParams.page,
       orderByField: paginationParams.orderByField,
       orderByDirection: paginationParams.orderByDirection,
-      where: undefined,
+      where: { branchId, tenantid },
     });
   }
 
   @Get(':id')
-  async findOne(@Param('id') id: string) {
-    const userFound = await this.productService.findOne(id);
-    if (!userFound) throw new NotFoundException('User not found!');
-    return userFound;
+  async findOne(@Req() request, @Param('id') id: string) {
+    const { branchId, tenantid, _ } = request.customer;
+
+    const productFound = await this.productService.findOne(id, {
+      branchId,
+      tenantid,
+    });
+    if (!productFound) throw new NotFoundException('Product not found!');
+    return productFound;
   }
 
   @Patch(':id')

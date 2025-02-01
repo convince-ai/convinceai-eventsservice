@@ -42,9 +42,9 @@ export class ProductRepository {
     );
   }
 
-  async findOne(id: string): Promise<any> {
+  async findOne(id: string, where: Record<string, string>): Promise<any> {
     return await this.prisma.product.findUnique({
-      where: { id },
+      where: { id, ...where },
     });
   }
 
