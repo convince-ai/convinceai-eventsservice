@@ -39,6 +39,27 @@ export class ProductsService {
     });
   }
 
+  async getAbandonedProducts({
+    limit,
+    page,
+    orderByField,
+    orderByDirection,
+  }): Promise<{ name: string; price: number }[]> {
+    const allEvents = await this.repository.findAll({
+      limit,
+      page,
+      orderByField,
+      orderByDirection,
+    });
+
+    const formatedProductList: { name: string; price: number }[] =
+      allEvents.data.map((event: any) => {
+        return { name: event.name, price: event.price || 0 };
+      });
+
+    return formatedProductList;
+  }
+
   async findOne(id: string) {
     return await this.repository.findOne(id);
   }

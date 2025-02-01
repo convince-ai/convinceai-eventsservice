@@ -35,7 +35,7 @@ export class AbandonedCartRepository {
   }): Promise<PaginatedResult<AsyncGenerator>> {
     const paginate: PaginateFunction = paginator({ perPage: limit });
 
-    const where = { isActive: true };
+    const where = {};
     const orderBy = {
       [orderByField]: orderByDirection,
     };

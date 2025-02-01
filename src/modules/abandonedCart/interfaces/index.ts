@@ -8,3 +8,9 @@ export type HotmartProduct = {
   id: string;
   name: string;
 };
+
+export type AbandonedEventsByRegion = {
+  abandonedCarts: number;
+  state: string;
+  ddd: string;
+};

@@ -40,6 +40,16 @@ export class AbandonedCartController {
     return userFound;
   }
 
+  @Get('/bi/abandoned-regions')
+  async abandonedRegions(@Query() paginationParams: PaginationParamsDto) {
+    return await this.eventsService.getAbandonedRegions({
+      limit: paginationParams.limit,
+      page: paginationParams.page,
+      orderByField: paginationParams.orderByField,
+      orderByDirection: paginationParams.orderByDirection,
+    });
+  }
+
   @Patch(':id')
   async update(
     @Param('id') id?: string,

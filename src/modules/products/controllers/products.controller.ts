@@ -35,6 +35,16 @@ export class ProductsController {
     });
   }
 
+  @Get('/bi/abandoned-products')
+  async abandonedRegions(@Query() paginationParams: PaginationParamsDto) {
+    return await this.productService.getAbandonedProducts({
+      limit: paginationParams.limit,
+      page: paginationParams.page,
+      orderByField: paginationParams.orderByField,
+      orderByDirection: paginationParams.orderByDirection,
+    });
+  }
+
   @Get(':id')
   async findOne(@Param('id') id: string) {
     const userFound = await this.productService.findOne(id);

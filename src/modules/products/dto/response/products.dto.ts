@@ -31,4 +31,11 @@ export class ProductDto extends BaseDto {
   })
   @IsString()
   description: string;
+
+  @ApiProperty({
+    description: 'Product price',
+    example: 100.5,
+  })
+  @IsNumber()
+  price: number;
 }
