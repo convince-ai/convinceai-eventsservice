@@ -10,6 +10,7 @@ import {
   Patch,
   Post,
   Query,
+  Req,
 } from '@nestjs/common';
 import { PaginationParamsDto } from '../../../common/dto/pagination.dto';
 import { ProductsService } from '../services/products.service';
@@ -26,12 +27,17 @@ export class ProductsController {
   }
 
   @Get()
-  findAll(@Query() paginationParams: PaginationParamsDto) {
+  findAll(@Req() request, @Query() paginationParams: PaginationParamsDto) {
+    const { branchId, tenantid, _ } = request.customer;
     return this.productService.findAll({
       limit: paginationParams.limit,
       page: paginationParams.page,
       orderByField: paginationParams.orderByField,
       orderByDirection: paginationParams.orderByDirection,
+      where: {
+        branchId,
+        tenantid,
+      },
     });
   }
 
@@ -42,6 +48,7 @@ export class ProductsController {
       page: paginationParams.page,
       orderByField: paginationParams.orderByField,
       orderByDirection: paginationParams.orderByDirection,
+      where: undefined,
     });
   }
 

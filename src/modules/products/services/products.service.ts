@@ -30,12 +30,13 @@ export class ProductsService {
     return createdProduct;
   }
 
-  async findAll({ limit, page, orderByField, orderByDirection }) {
+  async findAll({ limit, page, orderByField, orderByDirection, where }) {
     return await this.repository.findAll({
       limit,
       page,
       orderByField,
       orderByDirection,
+      where,
     });
   }
 
@@ -44,12 +45,14 @@ export class ProductsService {
     page,
     orderByField,
     orderByDirection,
+    where,
   }): Promise<{ name: string; price: number }[]> {
     const allEvents = await this.repository.findAll({
       limit,
       page,
       orderByField,
       orderByDirection,
+      where,
     });
 
     const formatedProductList: { name: string; price: number }[] =

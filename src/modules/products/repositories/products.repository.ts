@@ -21,6 +21,7 @@ export class ProductRepository {
     page,
     orderByField,
     orderByDirection,
+    where,
   }): Promise<PaginatedResult<AsyncGenerator>> {
     const paginate: PaginateFunction = paginator({ perPage: limit });
 
@@ -28,9 +29,11 @@ export class ProductRepository {
       [orderByField]: orderByDirection,
     };
 
+    where = where ?? undefined;
     return paginate(
       this.prisma.product,
       {
+        where,
         orderBy,
       },
       {
