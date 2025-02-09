@@ -40,29 +40,6 @@ export class ProductsService {
     });
   }
 
-  async getAbandonedProducts({
-    limit,
-    page,
-    orderByField,
-    orderByDirection,
-    where,
-  }): Promise<{ name: string; price: number }[]> {
-    const allEvents = await this.repository.findAll({
-      limit,
-      page,
-      orderByField,
-      orderByDirection,
-      where,
-    });
-
-    const formatedProductList: { name: string; price: number }[] =
-      allEvents.data.map((event: any) => {
-        return { name: event.name, price: event.price || 0 };
-      });
-
-    return formatedProductList;
-  }
-
   async findOne(id: string, where: Record<string, string>) {
     return await this.repository.findOne(id, where);
   }

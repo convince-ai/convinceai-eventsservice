@@ -14,3 +14,8 @@ export type AbandonedEventsByRegion = {
   state: string;
   ddd: string;
 };
+
+export type AbandonedProducts = {
+  name: string;
+  value: number;
+};

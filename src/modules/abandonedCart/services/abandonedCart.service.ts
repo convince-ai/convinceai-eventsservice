@@ -7,7 +7,8 @@ import { AbandonedCartRepository } from '../repositories/abandonedCart.repositor
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { AbandonedCartRegisteredEvent } from '../../abandonedCart/events/abandonedCart.event';
 import { dddToStateMap } from '../utils';
-import { AbandonedEventsByRegion } from '../interfaces';
+import { AbandonedEventsByRegion, AbandonedProducts } from '../interfaces';
+import { JsonObject } from '@prisma/client/runtime/library';
 
 @Injectable()
 export class AbandonedCartService {
@@ -36,6 +37,7 @@ export class AbandonedCartService {
       page,
       orderByField,
       orderByDirection,
+      where: {},
     });
   }
 
@@ -54,11 +56,60 @@ export class AbandonedCartService {
       page,
       orderByField,
       orderByDirection,
+      where: {},
     });
 
     const abandonedEventsByRegion = this.mapAbandonedEvents(allEvents.data);
 
     return Array.from(abandonedEventsByRegion.values());
+  }
+
+  async getAbandonedProducts({ where }): Promise<AbandonedProducts[]> {
+    const pipeline = [
+      {
+        $lookup: {
+          from: 'products',
+          localField: 'product.id',
+          foreignField: 'productId',
+          as: 'productData',
+        },
+      },
+      {
+        $unwind: {
+          path: '$productData',
+        },
+      },
+      {
+        $match: {
+          $and: [
+            { 'productData.tenantid': where.tenantid },
+            { 'productData.branchid': where.branchid },
+          ],
+        },
+      },
+      {
+        $project: {
+          'productData.name': 1,
+          'productData.productId': 1,
+        },
+      },
+    ];
+
+    const allEvents = (await this.repository.aggregate(pipeline)) as any;
+
+    const productsMap: Map<number, AbandonedProducts> = new Map();
+
+    allEvents.forEach((el: any) => {
+      const productId = el.productData.productId;
+      if (productsMap.has(productId)) {
+        const register = productsMap.get(productId);
+        register.value++;
+      } else {
+        productsMap.set(productId, { name: el.productData.name, value: 1 });
+      }
+    });
+
+    return Array.from(productsMap.values());
   }
 
   async remove(id: string) {
@@ -73,7 +124,7 @@ export class AbandonedCartService {
     return await this.repository.findAllByProductId(productId);
   }
 
-  mapAbandonedEvents(
+  protected mapAbandonedEvents(
     abandonedEvents: any,
   ): Map<string, AbandonedEventsByRegion> {
     const regex = /^\d{2}(\d{2})/;

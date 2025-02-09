@@ -32,10 +32,10 @@ export class AbandonedCartRepository {
     page,
     orderByField,
     orderByDirection,
+    where,
   }): Promise<PaginatedResult<AsyncGenerator>> {
     const paginate: PaginateFunction = paginator({ perPage: limit });
 
-    const where = {};
     const orderBy = {
       [orderByField]: orderByDirection,
     };
@@ -56,6 +56,10 @@ export class AbandonedCartRepository {
     return await this.prisma.abandonedCartEvent.findUnique({
       where: { id },
     });
+  }
+
+  async aggregate(pipeline: any) {
+    return await this.prisma.abandonedCartEvent.aggregateRaw({ pipeline });
   }
 
   async update(

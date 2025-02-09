@@ -44,22 +44,6 @@ export class ProductsController {
     });
   }
 
-  @Get('/bi/abandoned-products')
-  async abandonedRegions(
-    @Req() request,
-    @Query() paginationParams: PaginationParamsDto,
-  ) {
-    const { branchId, tenantid, _ } = request.customer;
-
-    return await this.productService.getAbandonedProducts({
-      limit: paginationParams.limit,
-      page: paginationParams.page,
-      orderByField: paginationParams.orderByField,
-      orderByDirection: paginationParams.orderByDirection,
-      where: { branchId, tenantid },
-    });
-  }
-
   @Get(':id')
   async findOne(@Req() request, @Param('id') id: string) {
     const { branchId, tenantid, _ } = request.customer;

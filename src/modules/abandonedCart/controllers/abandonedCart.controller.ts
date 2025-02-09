@@ -9,10 +9,13 @@ import {
   Patch,
   Post,
   Query,
+  Req,
+  UseInterceptors,
 } from '@nestjs/common';
 import { PaginationParamsDto } from '../../../common/dto/pagination.dto';
 import { AbandonedCartService } from '../services/abandonedCart.service';
 import { HotmartAbandonedCartPayload } from '../dto/response/hotmart-payload';
+import { JwtInterceptor } from 'src/system/interceptors/jwt.interceptor';
 
 @Controller('abandoned-cart')
 export class AbandonedCartController {
@@ -39,7 +42,7 @@ export class AbandonedCartController {
     if (!userFound) throw new NotFoundException('User not found!');
     return userFound;
   }
-
+  @UseInterceptors(JwtInterceptor)
   @Get('/bi/abandoned-regions')
   async abandonedRegions(@Query() paginationParams: PaginationParamsDto) {
     return await this.eventsService.getAbandonedRegions({
@@ -47,6 +50,16 @@ export class AbandonedCartController {
       page: paginationParams.page,
       orderByField: paginationParams.orderByField,
       orderByDirection: paginationParams.orderByDirection,
+    });
+  }
+
+  @UseInterceptors(JwtInterceptor)
+  @Get('/bi/abandoned-products')
+  async abandonedProducts(@Req() request) {
+    const { branchId, tenantid, _ } = request.customer;
+
+    return await this.eventsService.getAbandonedProducts({
+      where: { branchId, tenantid },
     });
   }
 
